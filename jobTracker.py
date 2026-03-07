@@ -26,6 +26,15 @@ class job():
 def create_job():
     title = input("Job Title: ")
     company = input("Company Name: ")
+
     newJob = job(title, company, curId.value)
-    curId.incrementId()
+    curId.increment_id()
+
+    jobList[newJob.id] = newJob
+
+def print_jobs():
+    print("----------Job-List---------")
+    for job in jobList.values():
+        job.print_job()
+        print("---------------------------")
 
