@@ -38,3 +38,25 @@ def print_jobs():
         job.print_job()
         print("---------------------------")
 
+
+while True:
+    print("1. Add application")
+    print("2. Delete application")
+    print("3. Update application")
+    print("4. Print all applications")
+    print("X. Exit")
+    command = input("Enter: ")
+
+    match command:
+        case '1':
+            create_job()
+        case '2':
+            print("WIP")
+        case '3':
+            print("WIP")
+        case '4':
+            print_jobs()
+        case 'X':
+            break
+        case _:
+            print("invalid command")
