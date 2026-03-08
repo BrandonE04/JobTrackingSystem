@@ -32,6 +32,10 @@ def create_job():
 
     jobList[newJob.id] = newJob
 
+def delete_job():
+    deleteId = input("Enter the id of the entry you would like to delete: ")
+    del jobList[int(deleteId)]
+
 def print_jobs():
     print("----------Job-List---------")
     for job in jobList.values():
@@ -51,7 +55,7 @@ while True:
         case '1':
             create_job()
         case '2':
-            print("WIP")
+            delete_job()
         case '3':
             print("WIP")
         case '4':
