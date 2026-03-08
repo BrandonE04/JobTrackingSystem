@@ -36,6 +36,55 @@ def delete_job():
     deleteId = input("Enter the id of the entry you would like to delete: ")
     del jobList[int(deleteId)]
 
+def update_job():
+    job = int(input("Enter job id of the job you would like to update: "))
+    print("1. Update company")
+    print("2. Update title")
+    print("3. Update application status")
+    print("X. Go back")
+    category = input("Enter: ")
+
+    match category:
+        case '1':
+            company = input("Enter new company name: ")
+            jobList[job].company = company
+        case '2':
+            title = input("Enter new job title: ")
+            jobList[job].title = title
+        case '3':
+            update_job_status(job)
+        case 'X':
+            return
+        case _:
+            print("invalid category")
+
+def update_job_status(job):
+    print("1. Applied")
+    print("2. Rejected")
+    print("3. Need to complete OA")
+    print("4. OA completed")
+    print("5. Interview Stage")
+    print("X. Go back")
+    status = input("Enter: ")
+
+    match status:
+        case '1':
+            jobList[job].status = "Applied"
+        case '2':
+            jobList[job].status = "Rejected"
+        case '3':
+            jobList[job].status = "Need to complete OA"
+        case '4':
+            jobList[job].status = "OA completed"
+        case '5':
+            jobList[job].status = "Interview stage"
+        case 'X':
+            return
+        case _:
+            print("Invalid status")
+
+
+
 def print_jobs():
     print("----------Job-List---------")
     for job in jobList.values():
@@ -57,7 +106,7 @@ while True:
         case '2':
             delete_job()
         case '3':
-            print("WIP")
+            update_job()
         case '4':
             print_jobs()
         case 'X':
