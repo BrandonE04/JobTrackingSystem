@@ -34,10 +34,18 @@ def create_job():
 
 def delete_job():
     deleteId = input("Enter the id of the entry you would like to delete: ")
-    del jobList[int(deleteId)]
+    if deleteId in jobList:
+        del jobList[int(deleteId)]
+    else:
+        print("Invalid id")
 
 def update_job():
     job = int(input("Enter job id of the job you would like to update: "))
+
+    if job not in jobList:
+        print("Invalid id")
+        return
+
     print("1. Update company")
     print("2. Update title")
     print("3. Update application status")
