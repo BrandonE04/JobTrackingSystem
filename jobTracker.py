@@ -1,3 +1,4 @@
+import database_setup
 import jobTracker_info
 
 jobList = {}
