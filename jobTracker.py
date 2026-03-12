@@ -12,7 +12,9 @@ def create_job():
 
     conn = sqlite3.connect("database.db")
     cur = conn.cursor()
-    cur.execute(f'''INSERT INTO JOB Values(?, ?, 'Applied', ?)''', (title, company, curId.value))
+    cur.execute('''INSERT INTO JOB Values(?, ?, 'Applied', ?)''', (title, company, curId.value))
+    conn.commit()
+    conn.close()
 
     curId.increment_id()
 
@@ -77,8 +79,17 @@ def update_job_status(job):
 
 def print_jobs():
     print("----------Job-List---------")
-    for job in jobList.values():
-        job.print_job()
+    conn = sqlite3.connect('database.db')
+    cur = conn.cursor()
+
+    cur.execute("SELECT * FROM JOB")
+    jobs = cur.fetchall()
+
+    for job in jobs:
+        print(f"Title: {job[0]}")
+        print(f"Company: {job[1]}")
+        print(f"Status: {job[2]}")
+        print(f"ID: {job[3]}")
         print("---------------------------")
 
 
