@@ -91,8 +91,6 @@ def update_job_status(job):
         case _:
             print("Invalid status")
 
-
-
 def print_jobs():
     print("----------Job-List---------")
     for job in jobList.values():
