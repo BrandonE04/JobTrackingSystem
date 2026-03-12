@@ -91,6 +91,7 @@ def print_jobs():
         print(f"Status: {job[2]}")
         print(f"ID: {job[3]}")
         print("---------------------------")
+    conn.close()
 
 
 while True:
