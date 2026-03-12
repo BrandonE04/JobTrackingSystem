@@ -1,3 +1,4 @@
+import sqlite3
 import database_setup
 import jobTracker_info
 
@@ -5,13 +6,15 @@ jobList = {}
 curId = jobTracker_info.Id()
 
 def create_job():
+
     title = input("Job Title: ")
     company = input("Company Name: ")
 
-    newJob = jobTracker_info.job(title, company, curId.value)
-    curId.increment_id()
+    conn = sqlite3.connect("database.db")
+    cur = conn.cursor()
+    cur.execute(f'''INSERT INTO JOB Values(?, ?, 'Applied', ?)''', (title, company, curId.value))
 
-    jobList[newJob.id] = newJob
+    curId.increment_id()
 
 def delete_job():
     deleteId = input("Enter the id of the entry you would like to delete: ")
