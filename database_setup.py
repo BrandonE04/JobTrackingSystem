@@ -13,3 +13,5 @@ try:
     print('database created')
 except:
     print('database already exists')
+    
+conn.close()

@@ -19,11 +19,17 @@ def create_job():
     curId.increment_id()
 
 def delete_job():
-    deleteId = input("Enter the id of the entry you would like to delete: ")
-    if deleteId in jobList:
-        del jobList[int(deleteId)]
-    else:
-        print("Invalid id")
+    deleteId = int(input("Enter the id of the entry you would like to delete: "))
+    conn = sqlite3.connect("database.db")
+    cur = conn.cursor()
+
+    # try:
+    cur.execute('''DELETE FROM JOB WHERE ID = ? ''', (deleteId,))
+    conn.commit()
+    # except:
+    #     print("Invalid id")
+
+    conn.close()
 
 def update_job():
     job = int(input("Enter job id of the job you would like to update: "))
