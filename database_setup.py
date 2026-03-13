@@ -5,13 +5,13 @@ cur = conn.cursor()
 
 try:
     cur.execute('''CREATE TABLE JOB(
-    Name TEXT NOT NULL,
+    Title TEXT NOT NULL,
     Company TEXT NOT NULL,
     Status TEXT NOT NULL,
-    ID INT PRIMARY KEY);
+    ID INTEGER PRIMARY KEY NOT NULL);
     ''')
     print('database created')
 except:
     print('database already exists')
-    
+
 conn.close()
