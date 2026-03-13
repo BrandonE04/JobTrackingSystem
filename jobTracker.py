@@ -23,11 +23,11 @@ def delete_job():
     conn = sqlite3.connect("database.db")
     cur = conn.cursor()
 
-    # try:
-    cur.execute('''DELETE FROM JOB WHERE ID = ? ''', (deleteId,))
-    conn.commit()
-    # except:
-    #     print("Invalid id")
+    if len(cur.execute('''SELECT ID FROM JOB WHERE ID = ? ''', (deleteId,)).fetchall()) != 0:
+        cur.execute('''DELETE FROM JOB WHERE ID = ? ''', (deleteId,))
+        conn.commit()
+    else:
+        print("Invalid id")
 
     conn.close()
 
