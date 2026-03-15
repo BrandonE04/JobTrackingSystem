@@ -1,70 +1,64 @@
+import sqlite3
+import database_setup
+
 jobList = {}
 
-class Id():
-    def __init__(self):
-        self.value = 1
-    
-    def increment_id(self):
-        self.value += 1
-
-curId = Id()
-
-class job():
-
-    def __init__(self, title, company, id):
-        self.title = title
-        self.company = company
-        self.status = "Applied"
-        self.id = id
-    
-    def print_job(self):
-        print(f"Id: {self.id}")
-        print(f"Company: {self.company}")
-        print(f"Title: {self.title}")
-        print(f"Status: {self.status}")
-
 def create_job():
+
     title = input("Job Title: ")
     company = input("Company Name: ")
 
-    newJob = job(title, company, curId.value)
-    curId.increment_id()
-
-    jobList[newJob.id] = newJob
+    conn = sqlite3.connect("database.db")
+    cur = conn.cursor()
+    cur.execute('''INSERT INTO JOB (Title, Company, Status) Values(?, ?, 'Applied')''', (title, company))
+    conn.commit()
+    conn.close()
 
 def delete_job():
-    deleteId = input("Enter the id of the entry you would like to delete: ")
-    if deleteId in jobList:
-        del jobList[int(deleteId)]
+    deleteId = int(input("Enter the id of the entry you would like to delete: "))
+    conn = sqlite3.connect("database.db")
+    cur = conn.cursor()
+
+    if len(cur.execute('''SELECT ID FROM JOB WHERE ID = ? ''', (deleteId,)).fetchall()) != 0:
+        cur.execute('''DELETE FROM JOB WHERE ID = ? ''', (deleteId,))
+        conn.commit()
     else:
         print("Invalid id")
 
+    conn.close()
+
 def update_job():
-    job = int(input("Enter job id of the job you would like to update: "))
+    jobId = int(input("Enter job id of the job you would like to update: "))
 
-    if job not in jobList:
-        print("Invalid id")
-        return
+    conn = sqlite3.connect("database.db")
+    cur = conn.cursor()
 
-    print("1. Update company")
-    print("2. Update title")
-    print("3. Update application status")
-    print("X. Go back")
-    category = input("Enter: ")
+    if len(cur.execute('''SELECT ID FROM JOB WHERE ID = ? ''', (jobId,)).fetchall()) != 0:
 
-    match category:
-        case '1':
-            company = input("Enter new company name: ")
-            jobList[job].company = company
-        case '2':
-            title = input("Enter new job title: ")
-            jobList[job].title = title
-        case '3':
-            update_job_status(job)
-        case 'X':
-            return
-        case _:
-            print("invalid category")
+        print("1. Update company")
+        print("2. Update title")
+        print("3. Update application status")
+        print("X. Go back")
+        category = input("Enter: ")
+
+        match category:
+            case '1':
+                company = input("Enter new company name: ")
+                cur.execute('''UPDATE JOB SET Company = ? WHERE ID = ? ''', (company, jobId))
+            case '2':
+                title = input("Enter new job title: ")
+                cur.execute('''UPDATE JOB SET Title = ? WHERE ID = ? ''', (title, jobId))
+            case '3':
+                status = update_job_status(jobId)
+                if status != "-1":
+                    cur.execute('''UPDATE JOB SET Status = ? WHERE ID = ? ''', (status, jobId))
+            case 'X':
+                return
+            case _:
+                print("invalid category")
+        
+        conn.commit()
+        conn.close()
 
 def update_job_status(job):
     print("1. Applied")
@@ -77,27 +71,38 @@ def update_job_status(job):
 
     match status:
         case '1':
-            jobList[job].status = "Applied"
+            status = "Applied"
         case '2':
-            jobList[job].status = "Rejected"
+            status = "Rejected"
         case '3':
-            jobList[job].status = "Need to complete OA"
+            status = "Need to complete OA"
         case '4':
-            jobList[job].status = "OA completed"
+            status = "OA completed"
         case '5':
-            jobList[job].status = "Interview stage"
+            status = "Interview stage"
         case 'X':
-            return
+            return -1
         case _:
             print("Invalid status")
-
-
+        
+    return status
+    
 
 def print_jobs():
     print("----------Job-List---------")
-    for job in jobList.values():
-        job.print_job()
+    conn = sqlite3.connect('database.db')
+    cur = conn.cursor()
+
+    cur.execute("SELECT * FROM JOB")
+    jobs = cur.fetchall()
+
+    for job in jobs:
+        print(f"Title: {job[0]}")
+        print(f"Company: {job[1]}")
+        print(f"Status: {job[2]}")
+        print(f"ID: {job[3]}")
         print("---------------------------")
+    conn.close()
 
 
 while True:
