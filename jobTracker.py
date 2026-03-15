@@ -28,31 +28,37 @@ def delete_job():
     conn.close()
 
 def update_job():
-    job = int(input("Enter job id of the job you would like to update: "))
+    jobId = int(input("Enter job id of the job you would like to update: "))
 
-    if job not in jobList:
-        print("Invalid id")
-        return
+    conn = sqlite3.connect("database.db")
+    cur = conn.cursor()
 
-    print("1. Update company")
-    print("2. Update title")
-    print("3. Update application status")
-    print("X. Go back")
-    category = input("Enter: ")
+    if len(cur.execute('''SELECT ID FROM JOB WHERE ID = ? ''', (jobId,)).fetchall()) != 0:
 
-    match category:
-        case '1':
-            company = input("Enter new company name: ")
-            jobList[job].company = company
-        case '2':
-            title = input("Enter new job title: ")
-            jobList[job].title = title
-        case '3':
-            update_job_status(job)
-        case 'X':
-            return
-        case _:
-            print("invalid category")
+        print("1. Update company")
+        print("2. Update title")
+        print("3. Update application status")
+        print("X. Go back")
+        category = input("Enter: ")
+
+        match category:
+            case '1':
+                company = input("Enter new company name: ")
+                cur.execute('''UPDATE JOB SET Company = ? WHERE ID = ? ''', (company, jobId))
+            case '2':
+                title = input("Enter new job title: ")
+                cur.execute('''UPDATE JOB SET Title = ? WHERE ID = ? ''', (title, jobId))
+            case '3':
+                status = update_job_status(jobId)
+                if status != "-1":
+                    cur.execute('''UPDATE JOB SET Status = ? WHERE ID = ? ''', (status, jobId))
+            case 'X':
+                return
+            case _:
+                print("invalid category")
+        
+        conn.commit()
+        conn.close()
 
 def update_job_status(job):
     print("1. Applied")
@@ -65,19 +71,22 @@ def update_job_status(job):
 
     match status:
         case '1':
-            jobList[job].status = "Applied"
+            status = "Applied"
         case '2':
-            jobList[job].status = "Rejected"
+            status = "Rejected"
         case '3':
-            jobList[job].status = "Need to complete OA"
+            status = "Need to complete OA"
         case '4':
-            jobList[job].status = "OA completed"
+            status = "OA completed"
         case '5':
-            jobList[job].status = "Interview stage"
+            status = "Interview stage"
         case 'X':
-            return
+            return -1
         case _:
             print("Invalid status")
+        
+    return status
+    
 
 def print_jobs():
     print("----------Job-List---------")
